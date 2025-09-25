@@ -31,7 +31,7 @@ public class Repository {
         }
     }
 
-    public List<String[]> read() throws IOException {
+    public List<String[]> getAll() throws IOException {
         // Verifica se o arquivo existe
         if (!Files.exists(FILEPATH)) {
             return new ArrayList<>(); // Retorna lista vazia se arquivo não existir
@@ -57,7 +57,7 @@ public class Repository {
     }
 
     public String[] getById(String id) throws IOException {
-        List<String[]> allData = this.read();
+        List<String[]> allData = this.getAll();
         String[] foundData = null;
 
         for (String[] data : allData) {

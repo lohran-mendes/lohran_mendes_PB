@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Console {
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
     private static UnauthenticatedUser user = new UnauthenticatedUser();
     private static Catalog catalog = new Catalog();
 

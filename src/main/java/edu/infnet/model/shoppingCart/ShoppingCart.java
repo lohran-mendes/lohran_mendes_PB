@@ -6,6 +6,15 @@ public class ShoppingCart {
     private Item[] preOrder;
     private double totalPrice;
     private int quantityOfItems;
+    private final String CART_ID;
+
+    public ShoppingCart(){
+        this.CART_ID = java.util.UUID.randomUUID().toString();
+    }
+
+    public String getCART_ID() {
+        return CART_ID;
+    }
 
     public void removeItemFromCart(Item item) {
         // implementa lógica para remover item do carrinho

@@ -7,6 +7,15 @@ public class Address {
     private String city;
     private String country;
     private String postalCode;
+    private final String ADDRESS_ID;
+
+    public Address() {
+        this.ADDRESS_ID = java.util.UUID.randomUUID().toString();
+    }
+
+    public String getADDRESS_ID() {
+        return ADDRESS_ID;
+    }
 
     public void getAddress() {
         // Lógica para obter o endereço

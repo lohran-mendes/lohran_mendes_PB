@@ -7,13 +7,21 @@ import edu.infnet.model.payment.PaymentStatus;
 import java.time.LocalDateTime;
 
 public class Order {
-    private long ORDER_ID;
+    private final String ORDER_ID;
     private LocalDateTime orderDate;
     private Address deliveryAddress;
     private OrderDetails orderDetails;
     // devo alterar para que só tenho a classe de pagamento e tire o status de pagamento daqui
     private PaymentStatus paymentStatus;
     private Payment payment;
+
+    public Order() {
+        this.ORDER_ID = java.util.UUID.randomUUID().toString();
+    }
+
+    public String getORDER_ID() {
+        return ORDER_ID;
+    }
 
     public void consultOrderStatus() {
         // Lógica para consultar o status do pedido

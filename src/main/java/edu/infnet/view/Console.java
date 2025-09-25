@@ -1,11 +1,12 @@
 package edu.infnet.view;
 
-import edu.infnet.model.catalog.Catalog;
+import edu.infnet.model.address.Address;
 import edu.infnet.model.item.Item;
 import edu.infnet.model.user.AdminUser;
 import edu.infnet.model.user.AuthenticatedUser;
 import edu.infnet.model.user.UnauthenticatedUser;
-import edu.infnet.repository.catalog.CatalogTable;
+import edu.infnet.repository.address.AddressRepository;
+import edu.infnet.repository.item.ItemTable;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,7 +16,6 @@ public class Console {
     private static final Scanner scanner = new Scanner(System.in);
     private static UnauthenticatedUser user = new UnauthenticatedUser();
     private static AdminUser admin = new AdminUser("admin", "admin@gmail.com", "admin123");
-    private static Catalog catalog = new Catalog();
     private static boolean running;
 
     public static void init() {
@@ -31,7 +31,7 @@ public class Console {
             System.out.println("2. Criar Nova Conta");
             System.out.println("3. Fazer Login");
             System.out.println("4. Sair");
-            System.out.print("Escolha uma opção: ");
+            System.out.print("\nEscolha uma opção: ");
 
             try {
                 int opcao = scanner.nextInt();
@@ -72,7 +72,7 @@ public class Console {
             System.out.println("4. Atualizar Item");
             System.out.println("5. Consultar Pedidos");
             System.out.println("6. Sair");
-            System.out.print("Escolha uma opção: ");
+            System.out.print("\nEscolha uma opção: ");
 
             try {
                 int opcao = scanner.nextInt();
@@ -83,7 +83,7 @@ public class Console {
                         visualizarCatalogo();
                         break;
                     case 2:
-                         adicionarItem();
+                        adicionarItem();
                         break;
                     case 3:
                         // removerItem();
@@ -102,14 +102,14 @@ public class Console {
                         System.out.println("Opção inválida! Por favor, escolha uma opção entre 1 e 6.");
                 }
             } catch (Exception e) {
-                System.out.println("Entrada inválida! Por favor, digite um número.");
+                System.out.println("\nEntrada inválida! Por favor, digite um número.");
                 scanner.nextLine(); // Limpar o buffer em caso de erro
             }
         }
     }
 
     private static void visualizarCatalogo() throws IOException {
-        List<String[]> itensList = catalog.consultCatalog();
+        List<String[]> itensList = user.consultCatalog();
 
         System.out.println("\n=== CATÁLOGO DE PRODUTOS ===");
         System.out.println("-------------------------------------------------");
@@ -117,9 +117,9 @@ public class Console {
         System.out.println("-------------------------------------------------");
         for (String[] itens : itensList) {
             System.out.printf("%-20s | %-10.2f | %-10s%n",
-                    itens[CatalogTable.NAME],
-                    Double.parseDouble(itens[CatalogTable.PRICE]),
-                    itens[CatalogTable.QUANTITY]);
+                    itens[ItemTable.NAME],
+                    Double.parseDouble(itens[ItemTable.PRICE]),
+                    itens[ItemTable.QUANTITY]);
         }
         System.out.println("-------------------------------------------------");
         System.out.println("\n\nCatálogo exibido com sucesso!");
@@ -139,16 +139,61 @@ public class Console {
         System.out.print("Digite sua senha: ");
         String senha = scanner.nextLine();
 
-        try {
-            AuthenticatedUser novoUsuario = new AuthenticatedUser(nome, email, senha);
-            user.singUp(novoUsuario);
-            System.out.println("Conta criada com sucesso!");
-        } catch (Exception e) {
-            System.out.println("Erro ao criar conta: " + e.getMessage());
-            System.out.println("Pressione Enter para voltar ao menu...");
-            scanner.nextLine();
+        System.out.println("Deseja adicionar um endereço? (s/n)");
+        String resposta = scanner.nextLine();
+        if (resposta.equalsIgnoreCase("s")) {
+            Address address = adicionarEndereco();
+            try {
+                AuthenticatedUser novoUsuario = new AuthenticatedUser(nome, email, senha , address);
+                user.singUp(novoUsuario);
+                System.out.println("Conta criada com sucesso!");
+            } catch (Exception e) {
+                System.out.println("\nErro ao criar conta: " + e.getMessage());
+                System.out.println("Pressione Enter para voltar ao menu...");
+                scanner.nextLine();
+            }
+        } else {
+            try {
+                AuthenticatedUser novoUsuario = new AuthenticatedUser(nome, email, senha);
+                user.singUp(novoUsuario);
+                System.out.println("Conta criada com sucesso!");
+            } catch (Exception e) {
+                System.out.println("\nErro ao criar conta: " + e.getMessage());
+                System.out.println("Pressione Enter para voltar ao menu...");
+                scanner.nextLine();
+            }
         }
 
+    }
+
+    private static Address adicionarEndereco() {
+        System.out.println("\n=== ADICIONAR ENDEREÇO ===");
+
+        System.out.print("Qual o seu estado: ");
+        String estado = scanner.nextLine();
+
+        System.out.print("Qual a sua cidade: ");
+        String cidade = scanner.nextLine();
+
+        System.out.print("Qual o seu CEP: ");
+        String cep = scanner.nextLine();
+
+        System.out.print("Qual o nome da sua rua: ");
+        String rua = scanner.nextLine();
+
+        System.out.print("Qual o número da sua casa: ");
+        String numero = scanner.nextLine();
+
+        try {
+            Address newAddress = new Address(estado, cidade, cep, rua, Integer.parseInt(numero));
+            AddressRepository.saveNewAddress(newAddress);
+            return newAddress;
+        } catch (Exception e) {
+            System.out.println("\nErro ao adicionar endereço: " + e.getMessage());
+            System.out.println("Pressione Enter para voltar ao menu...");
+            scanner.nextLine();
+            return null;
+        }
     }
 
     private static void fazerLogin() {
@@ -196,7 +241,7 @@ public class Console {
             admin.addItem(newItem);
             System.out.println("Novo item '" + newItem.getName() + "' criada com sucesso!");
         } catch (Exception e) {
-            System.out.println("Erro ao criar item: " + e.getMessage());
+            System.out.println("\nErro ao criar item: " + e.getMessage());
             System.out.println("Pressione Enter para voltar ao menu...");
             scanner.nextLine();
         }

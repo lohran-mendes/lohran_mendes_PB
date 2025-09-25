@@ -5,12 +5,20 @@ public class Address {
     private String streetName;
     private String district;
     private String city;
-    private String country;
     private String postalCode;
     private final String ADDRESS_ID;
 
     public Address() {
         this.ADDRESS_ID = java.util.UUID.randomUUID().toString();
+    }
+
+    public Address(String district, String city, String postalCode , String streetName, int houseNumber) {
+        this.ADDRESS_ID = java.util.UUID.randomUUID().toString();
+        this.district = district;
+        this.city = city;
+        this.postalCode = postalCode;
+        this.streetName = streetName;
+        this.houseNumber = houseNumber;
     }
 
     public String getADDRESS_ID() {
@@ -19,7 +27,7 @@ public class Address {
 
     public void getAddress() {
         // Lógica para obter o endereço
-        System.out.println(houseNumber + ", " + streetName + ", " + district + ", " + city + ", " + country + ", " + postalCode);
+        System.out.println(district + ", " + city + ", " + postalCode + ", " + streetName + ", " + houseNumber);
     }
     public void updateAddress(Address newAddress) {
         // Lógica para atualizar o endereço
@@ -27,8 +35,11 @@ public class Address {
         this.streetName = newAddress.streetName;
         this.district = newAddress.district;
         this.city = newAddress.city;
-        this.country = newAddress.country;
         this.postalCode = newAddress.postalCode;
         System.out.println("Endereço atualizado com sucesso!");
+    }
+
+    public String getAllInfo(){
+        return this.ADDRESS_ID + ";" + this.district + ";" + this.city + ";" + this.postalCode + ";" + this.streetName + ";" + this.houseNumber;
     }
 }

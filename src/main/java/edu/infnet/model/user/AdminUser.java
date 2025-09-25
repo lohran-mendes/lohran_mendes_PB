@@ -1,9 +1,10 @@
 package edu.infnet.model.user;
 
 import edu.infnet.model.item.Item;
-import edu.infnet.repository.user.AdminUserRepository;
+import edu.infnet.repository.item.ItemRepository;
 
 import java.io.IOException;
+import java.util.List;
 
 public class AdminUser extends AuthenticatedUser {
     private final UserType userType = UserType.ADMIN;
@@ -14,7 +15,7 @@ public class AdminUser extends AuthenticatedUser {
 
     // todos tem que ter um item de parametro que deve ser adicionado mais tarde
     public void addItem(Item item) throws IOException {
-        AdminUserRepository.addItem(item);
+        ItemRepository.addItem(item);
         System.out.println("Item adicionado com sucesso!");
     }
 
@@ -31,5 +32,10 @@ public class AdminUser extends AuthenticatedUser {
     @Override
     public UserType getUserType() {
         return userType;
+    }
+
+    @Override
+    public List<String[]> consultCatalog() throws IOException {
+        return ItemRepository.consultCatalog();
     }
 }

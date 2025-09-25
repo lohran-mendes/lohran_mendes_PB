@@ -3,6 +3,10 @@ package edu.infnet.model.user;
 import edu.infnet.model.address.Address;
 import edu.infnet.model.order.Order;
 import edu.infnet.model.shoppingCart.ShoppingCart;
+import edu.infnet.repository.item.ItemRepository;
+
+import java.io.IOException;
+import java.util.List;
 
 public class AuthenticatedUser implements IUser {
     private final UserType userType = UserType.AUTHENTICATED;
@@ -28,6 +32,13 @@ public class AuthenticatedUser implements IUser {
         this.email = email;
         this.password = password;
     }
+    public AuthenticatedUser(String name, String email, String password, Address address) {
+        this.USER_ID = java.util.UUID.randomUUID().toString();
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.address = address;
+    }
 
     public String getName() {
         return name;
@@ -38,7 +49,7 @@ public class AuthenticatedUser implements IUser {
     }
 
     public String getAllInfo() {
-        return USER_ID + ";" + name + ";" + email + ";" + password + ";" + address + ";" + order + ";" + shoppingCart;
+        return USER_ID + ";" + userType + ";" + name + ";" + email + ";" + password + ";" + address.getADDRESS_ID() + ";" + order + ";" + shoppingCart;
     }
 
     public void consultOrders() {
@@ -54,5 +65,10 @@ public class AuthenticatedUser implements IUser {
     @Override
     public UserType getUserType() {
         return userType;
+    }
+
+    @Override
+    public List<String[]> consultCatalog() throws IOException {
+        return ItemRepository.consultCatalog();
     }
 }

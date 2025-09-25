@@ -15,6 +15,13 @@ public class AuthenticatedUser implements IUser {
     private Order order;
     private ShoppingCart shoppingCart;
 
+    public AuthenticatedUser(String USER_ID, String name, String email, String password) {
+        this.USER_ID = java.util.UUID.randomUUID().toString();
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
     public AuthenticatedUser(String name, String email, String password) {
         this.USER_ID = java.util.UUID.randomUUID().toString();
         this.name = name;
@@ -31,7 +38,7 @@ public class AuthenticatedUser implements IUser {
     }
 
     public String getAllInfo() {
-        return USER_ID + ";" + name + ";" + email + ";" + password;
+        return USER_ID + ";" + name + ";" + email + ";" + password + ";" + address + ";" + order + ";" + shoppingCart;
     }
 
     public void consultOrders() {

@@ -1,6 +1,6 @@
 package edu.infnet.model.user;
 
-import edu.infnet.repository.user.UserRepository;
+import edu.infnet.repository.user.UnauthenticatedUserRepository;
 
 import java.io.IOException;
 
@@ -8,11 +8,11 @@ public class UnauthenticatedUser implements IUser{
     private final UserType userType = UserType.UNAUTHENTICATED;
 
     public void singUp(AuthenticatedUser newAuthenticatedUser) throws Exception {
-        UserRepository.singUp(newAuthenticatedUser);
+        UnauthenticatedUserRepository.singUp(newAuthenticatedUser);
     }
 
-    public boolean singIn(String email, String password) throws IOException {
-        return UserRepository.singIn(email, password);
+    public AuthenticatedUser singIn(String email, String password) throws Exception {
+        return UnauthenticatedUserRepository.singIn(email, password);
     }
 
     @Override

@@ -6,8 +6,8 @@ import edu.infnet.repository.Repository;
 
 import java.io.IOException;
 
-public class UserRepository {
-    static Repository repository = new Repository(UserType.UNAUTHENTICATED.toString());
+public class UnauthenticatedUserRepository {
+    static Repository repository = new Repository("usersDB");
 
     public static void singUp(AuthenticatedUser newAuthenticatedUser) throws Exception {
         String content = newAuthenticatedUser.getAllInfo();
@@ -20,13 +20,12 @@ public class UserRepository {
         repository.save(content);
     }
 
-    public static boolean singIn(String email, String password) throws IOException {
+    public static AuthenticatedUser singIn(String email, String password) throws Exception {
         for (String[] user : repository.getAll()) {
             if (user[UserTable.EMAIL].equals(email) && user[UserTable.PASSWORD].equals(password)) {
-                System.out.println("Login bem-sucedido! Bem-vindo, " + user[UserTable.NAME]);
-                return true;
+                return new AuthenticatedUser(user[UserTable.ID], user[UserTable.NAME], user[UserTable.EMAIL], user[UserTable.PASSWORD]);
             }
         }
-        return false;
+        throw new Exception("O email ou a senha estão incorretos.");
     }
 }

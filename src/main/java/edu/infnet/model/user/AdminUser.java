@@ -1,5 +1,10 @@
 package edu.infnet.model.user;
 
+import edu.infnet.model.item.Item;
+import edu.infnet.repository.user.AdminUserRepository;
+
+import java.io.IOException;
+
 public class AdminUser extends AuthenticatedUser {
     private final UserType userType = UserType.ADMIN;
 
@@ -8,8 +13,8 @@ public class AdminUser extends AuthenticatedUser {
     }
 
     // todos tem que ter um item de parametro que deve ser adicionado mais tarde
-    public void addItem() {
-        // Lógica para adicionar um item
+    public void addItem(Item item) throws IOException {
+        AdminUserRepository.addItem(item);
         System.out.println("Item adicionado com sucesso!");
     }
 

@@ -21,6 +21,15 @@ public class Address {
         this.houseNumber = houseNumber;
     }
 
+    public Address(String address_id, String district, String city, String postalCode , String streetName, int houseNumber) {
+        this.ADDRESS_ID = address_id;
+        this.district = district;
+        this.city = city;
+        this.postalCode = postalCode;
+        this.streetName = streetName;
+        this.houseNumber = houseNumber;
+    }
+
     public String getADDRESS_ID() {
         return ADDRESS_ID;
     }

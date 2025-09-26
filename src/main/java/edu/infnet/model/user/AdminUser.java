@@ -1,5 +1,6 @@
 package edu.infnet.model.user;
 
+import edu.infnet.model.address.Address;
 import edu.infnet.model.item.Item;
 import edu.infnet.repository.item.ItemRepository;
 
@@ -11,6 +12,10 @@ public class AdminUser extends AuthenticatedUser {
 
     public AdminUser(String name, String email, String password) {
         super(name, email, password);
+    }
+
+    public AdminUser(String USER_ID, String name, String email, String password) {
+        super(USER_ID, name, email, password);
     }
 
     // todos tem que ter um item de parametro que deve ser adicionado mais tarde

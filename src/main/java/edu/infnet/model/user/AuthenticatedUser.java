@@ -19,6 +19,17 @@ public class AuthenticatedUser implements IUser {
     private Order order;
     public ShoppingCart shoppingCart;
 
+    public AuthenticatedUser(String USER_ID, String name, String email, String password, Address address, Order order, ShoppingCart shoppingCart) {
+        this.USER_ID = USER_ID;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.address = address;
+        this.order = order;
+        this.shoppingCart = shoppingCart;
+    }
+
+
     public AuthenticatedUser(String USER_ID, String name, String email, String password) {
         this.USER_ID = java.util.UUID.randomUUID().toString();
         this.name = name;
@@ -31,13 +42,21 @@ public class AuthenticatedUser implements IUser {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.shoppingCart = new ShoppingCart();
+        this.order = new Order();
     }
+
     public AuthenticatedUser(String name, String email, String password, Address address) {
         this.USER_ID = java.util.UUID.randomUUID().toString();
         this.name = name;
         this.email = email;
         this.password = password;
         this.address = address;
+        this.shoppingCart = new ShoppingCart();
+    }
+
+    public String getOrderID() {
+        return order.getORDER_ID();
     }
 
     public String getName() {
@@ -49,7 +68,7 @@ public class AuthenticatedUser implements IUser {
     }
 
     public String getAllInfo() {
-        return USER_ID + ";" + userType + ";" + name + ";" + email + ";" + password + ";" + getAddressIDToString() + ";" + order + ";" + shoppingCart;
+        return USER_ID + ";" + userType + ";" + name + ";" + email + ";" + password + ";" + getAddressIDToString() + ";" + shoppingCart.getCART_ID() + ";" + getOrderID();
     }
 
     public void consultOrders() {

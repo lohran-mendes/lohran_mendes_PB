@@ -17,6 +17,21 @@ public class Item {
         this.quantity = quantity;
     }
 
+    public Item(String itemID, String name, double price, int quantity) {
+        this.ITEM_ID = itemID;
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public String getITEM_ID() {
+        return ITEM_ID;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
     public String getName() {
         return name;
     }

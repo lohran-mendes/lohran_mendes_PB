@@ -7,7 +7,7 @@ import edu.infnet.model.payment.PaymentStatus;
 import java.time.LocalDateTime;
 
 public class Order {
-    private final String ORDER_ID;
+    private String ORDER_ID;
     private LocalDateTime orderDate;
     private Address deliveryAddress;
     private OrderDetails orderDetails;
@@ -19,6 +19,9 @@ public class Order {
         this.ORDER_ID = java.util.UUID.randomUUID().toString();
     }
 
+    public Order(String orderID) {
+        this.ORDER_ID = orderID;
+    }
     public String getORDER_ID() {
         return ORDER_ID;
     }

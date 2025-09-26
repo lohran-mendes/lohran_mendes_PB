@@ -7,7 +7,7 @@ public class UserTable {
     public static final int EMAIL= 3;
     public static final int PASSWORD= 4;
     public static final int ADDRESS= 5;
-    public static final int SHOPPINGCART= 6;
+    public static final int SHOPPINGCART_id = 6;
     public static final int ORDER= 7;
 
 }

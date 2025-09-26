@@ -4,9 +4,11 @@ import edu.infnet.model.address.Address;
 import edu.infnet.model.item.Item;
 import edu.infnet.model.user.AdminUser;
 import edu.infnet.model.user.AuthenticatedUser;
+import edu.infnet.model.user.IUser;
 import edu.infnet.model.user.UnauthenticatedUser;
 import edu.infnet.repository.address.AddressRepository;
 import edu.infnet.repository.item.ItemTable;
+import edu.infnet.repository.preOrder.PreOrderRepository;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,7 +18,6 @@ public class Console {
     private static final Scanner scanner = new Scanner(System.in);
     private static final UnauthenticatedUser unauthenticatedUser = new UnauthenticatedUser();
     private static AuthenticatedUser authenticatedUser;
-    private static AdminUser adminUser;
 
     private static AdminUser admin = new AdminUser("admin", "admin@gmail.com", "admin123");
     private static boolean running;
@@ -59,7 +60,7 @@ public class Console {
                         System.out.println("Opção inválida! Por favor, escolha uma opção entre 1 e 4.");
                 }
             } catch (Exception e) {
-                System.out.println("Entrada inválida! Por favor, digite um número.");
+                System.out.println("Entrada inválida! Por favor, digite um número. " + e.getMessage());
                 scanner.nextLine(); // Limpar o buffer em caso de erro
             }
         }
@@ -106,7 +107,7 @@ public class Console {
                         System.out.println("Opção inválida! Por favor, escolha uma opção entre 1 e 6.");
                 }
             } catch (Exception e) {
-                System.out.println("\nEntrada inválida! Por favor, digite um número.");
+                System.out.println("\nEntrada inválida! Por favor, digite um número." + e.getMessage());
                 scanner.nextLine(); // Limpar o buffer em caso de erro
             }
         }
@@ -132,7 +133,7 @@ public class Console {
                         visualizarCatalogo();
                         break;
                     case 2:
-                        // consultarCarrinho();
+                        consultarCarrinho();
                         break;
                     case 3:
                         // consultarPedidos();
@@ -145,7 +146,7 @@ public class Console {
                         System.out.println("Opção inválida! Por favor, escolha uma opção entre 1 e 6.");
                 }
             } catch (Exception e) {
-                System.out.println("\nEntrada inválida! Por favor, digite um número.");
+                System.out.println("\nEntrada inválida! Por favor, digite um número." + e.getMessage());
                 scanner.nextLine(); // Limpar o buffer em caso de erro
             }
         }
@@ -167,27 +168,46 @@ public class Console {
     }
 
 
-    private static void visualizarCatalogo() throws IOException {
+    private static void consultarCarrinho() throws IOException {
+        System.out.println("\n=== CARRINHO DE COMPRAS ===");
+        System.out.println("Total de Itens: " + authenticatedUser.shoppingCart.getQuantityOfItems());
+        System.out.printf("Preço Total: R$ %.2f%n", authenticatedUser.shoppingCart.getTotalPrice());
+
+
+        List<Item> itensNoCarrinho = PreOrderRepository.getAllItemsOFPreOrderByID(authenticatedUser.shoppingCart.getIdPreOrder());
+        int index = 1;
+
+        for (Item item : itensNoCarrinho) {
+            System.out.println("Item " + (index) + " - " + item.getName() + " - R$ " + item.getPrice());
+            index++;
+        }
+
+        opcaoDeSair();
+    }
+
+    private static void visualizarCatalogo() throws Exception {
         showCatalog();
         System.out.println("\n1. Adicionar item no carrinho");
         String opcao = opcaoDeSair();
         if (opcao.equals("1")) {
+            showCatalog();
             adicionarAoCarrinho();
         }
     }
 
-    private static void adicionarAoCarrinho() {
+    private static void adicionarAoCarrinho() throws Exception {
         System.out.print("Digite o ID do item que deseja adicionar ao carrinho: ");
         int itemId = scanner.nextInt();
-        scanner.nextLine();
-
 
         String[] itemSelecionado = itensList.get(itemId - 1);
-        admin.shoppingCart.addItemToCart(itemSelecionado[ItemTable.ITEM_ID]);
+        authenticatedUser.shoppingCart.addItemToCart(itemSelecionado[ItemTable.ITEM_ID]);
 
         System.out.println("Item com ID " + itemId + " adicionado ao carrinho!");
-        System.out.println("Deseja continuar comprando? (s/n)");
+        System.out.println("Deseja continuar adicionando itens ao carrinho? (s/n)");
+
         String resposta = scanner.nextLine();
+        resposta = scanner.nextLine();
+
         if (resposta.equalsIgnoreCase("s")) {
             try {
                 visualizarCatalogo();
@@ -195,7 +215,7 @@ public class Console {
                 throw new RuntimeException(e);
             }
         } else {
-            System.out.println("Obrigado por comprar conosco!");
+            System.out.println("Redirecionando de volta ao menu!");
         }
     }
 
@@ -278,7 +298,7 @@ public class Console {
             authenticatedUser = unauthenticatedUser.singIn(email, senha);
             running = false;
             if (authenticatedUser.getUserType().toString().equals("ADMIN")) {
-                System.out.println("Login realizado com sucesso! Bem-vindo, " + authenticatedUser.getName() + "!");
+                System.out.println("Login de Administrador realizado com sucesso! Bem-vindo, " + authenticatedUser.getName() + "!");
                 showMenuAdmin();
             } else {
                 System.out.println("Login realizado com sucesso! Bem-vindo, " + authenticatedUser.getName() + "!");

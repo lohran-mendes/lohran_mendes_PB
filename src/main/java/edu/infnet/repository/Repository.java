@@ -69,4 +69,27 @@ public class Repository {
 
         return foundData;
     }
+
+    public void deleteById(String id) throws IOException {
+
+        if (!Files.exists(DIRPATH)) {
+            Files.createDirectories(DIRPATH);
+        }
+
+        List<String[]> allData = this.getAll();
+        List<String[]> updatedData = new ArrayList<>();
+
+        for (String[] data : allData) {
+            if (data.length > 0 && !data[0].equals(id)) {
+                updatedData.add(data);
+            }
+        }
+
+        // Reescreve o arquivo com os dados atualizados
+        try (FileWriter writer = new FileWriter(FILENAME, false)) {
+            for (String[] data : updatedData) {
+                writer.append(String.join(";", data)).append(System.lineSeparator());
+            }
+        }
+    }
 }

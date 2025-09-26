@@ -14,9 +14,13 @@ import java.util.Scanner;
 
 public class Console {
     private static final Scanner scanner = new Scanner(System.in);
-    private static UnauthenticatedUser user = new UnauthenticatedUser();
+    private static final UnauthenticatedUser unauthenticatedUser = new UnauthenticatedUser();
+    private static AuthenticatedUser authenticatedUser;
+    private static AdminUser adminUser;
+
     private static AdminUser admin = new AdminUser("admin", "admin@gmail.com", "admin123");
     private static boolean running;
+    static List<String[]> itensList;
 
     public static void init() {
         System.out.println("\nBem-vindo ao sistema de gerenciamento de usuários!");
@@ -108,23 +112,91 @@ public class Console {
         }
     }
 
-    private static void visualizarCatalogo() throws IOException {
-        List<String[]> itensList = user.consultCatalog();
+    private static void showMenuAuthenticated() {
+        running = true;
+
+        while (running) {
+            System.out.println("\n=== MENU PADRÃO ===");
+            System.out.println("1. Visualizar Catálogo");
+            System.out.println("2. Consultar Carrinho");
+            System.out.println("3. Consultar Pedidos");
+            System.out.println("4. Sair");
+            System.out.print("\nEscolha uma opção: ");
+
+            try {
+                int opcao = scanner.nextInt();
+                scanner.nextLine(); // Limpar o buffer
+
+                switch (opcao) {
+                    case 1:
+                        visualizarCatalogo();
+                        break;
+                    case 2:
+                        // consultarCarrinho();
+                        break;
+                    case 3:
+                        // consultarPedidos();
+                        break;
+                    case 4:
+                        System.out.println("Logout realizado com sucesso!");
+                        running = false;
+                        break;
+                    default:
+                        System.out.println("Opção inválida! Por favor, escolha uma opção entre 1 e 6.");
+                }
+            } catch (Exception e) {
+                System.out.println("\nEntrada inválida! Por favor, digite um número.");
+                scanner.nextLine(); // Limpar o buffer em caso de erro
+            }
+        }
+    }
+
+    private static void showCatalog() throws IOException {
+        itensList = unauthenticatedUser.consultCatalog();
 
         System.out.println("\n=== CATÁLOGO DE PRODUTOS ===");
-        System.out.println("-------------------------------------------------");
-        System.out.printf("%-20s | %-10s | %-10s%n", "Nome", "Preço", "Quantidade");
-        System.out.println("-------------------------------------------------");
+        System.out.println("-------------------------------------------------------------");
+        System.out.printf("%-5s | %-20s | %-10s | %-10s%n", "ID", "Nome", "Preço", "Quantidade");
+        System.out.println("-------------------------------------------------------------");
+        int ordem = 1;
         for (String[] itens : itensList) {
-            System.out.printf("%-20s | %-10.2f | %-10s%n",
-                    itens[ItemTable.NAME],
-                    Double.parseDouble(itens[ItemTable.PRICE]),
-                    itens[ItemTable.QUANTITY]);
+            System.out.printf("%-5s | %-20s | %-10.2f | %-10s%n", ordem, itens[ItemTable.NAME], Double.parseDouble(itens[ItemTable.PRICE]), itens[ItemTable.QUANTITY]);
+            ordem++;
         }
-        System.out.println("-------------------------------------------------");
-        System.out.println("\n\nCatálogo exibido com sucesso!");
-        System.out.println("Pressione Enter para voltar ao menu...");
+        System.out.println("\n-------------------------------------------------------------");
+    }
+
+
+    private static void visualizarCatalogo() throws IOException {
+        showCatalog();
+        System.out.println("\n1. Adicionar item no carrinho");
+        String opcao = opcaoDeSair();
+        if (opcao.equals("1")) {
+            adicionarAoCarrinho();
+        }
+    }
+
+    private static void adicionarAoCarrinho() {
+        System.out.print("Digite o ID do item que deseja adicionar ao carrinho: ");
+        int itemId = scanner.nextInt();
         scanner.nextLine();
+
+
+        String[] itemSelecionado = itensList.get(itemId - 1);
+        admin.shoppingCart.addItemToCart(itemSelecionado[ItemTable.ITEM_ID]);
+
+        System.out.println("Item com ID " + itemId + " adicionado ao carrinho!");
+        System.out.println("Deseja continuar comprando? (s/n)");
+        String resposta = scanner.nextLine();
+        if (resposta.equalsIgnoreCase("s")) {
+            try {
+                visualizarCatalogo();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            System.out.println("Obrigado por comprar conosco!");
+        }
     }
 
     private static void criarNovaConta() {
@@ -144,23 +216,21 @@ public class Console {
         if (resposta.equalsIgnoreCase("s")) {
             Address address = adicionarEndereco();
             try {
-                AuthenticatedUser novoUsuario = new AuthenticatedUser(nome, email, senha , address);
-                user.singUp(novoUsuario);
+                AuthenticatedUser novoUsuario = new AuthenticatedUser(nome, email, senha, address);
+                unauthenticatedUser.singUp(novoUsuario);
                 System.out.println("Conta criada com sucesso!");
             } catch (Exception e) {
                 System.out.println("\nErro ao criar conta: " + e.getMessage());
-                System.out.println("Pressione Enter para voltar ao menu...");
-                scanner.nextLine();
+                opcaoDeSair();
             }
         } else {
             try {
                 AuthenticatedUser novoUsuario = new AuthenticatedUser(nome, email, senha);
-                user.singUp(novoUsuario);
+                unauthenticatedUser.singUp(novoUsuario);
                 System.out.println("Conta criada com sucesso!");
             } catch (Exception e) {
                 System.out.println("\nErro ao criar conta: " + e.getMessage());
-                System.out.println("Pressione Enter para voltar ao menu...");
-                scanner.nextLine();
+                opcaoDeSair();
             }
         }
 
@@ -190,8 +260,7 @@ public class Console {
             return newAddress;
         } catch (Exception e) {
             System.out.println("\nErro ao adicionar endereço: " + e.getMessage());
-            System.out.println("Pressione Enter para voltar ao menu...");
-            scanner.nextLine();
+            opcaoDeSair();
             return null;
         }
     }
@@ -206,20 +275,21 @@ public class Console {
         String senha = scanner.nextLine();
 
         try {
-            AuthenticatedUser authenticatedUser = user.singIn(email, senha);
+            authenticatedUser = unauthenticatedUser.singIn(email, senha);
             running = false;
             if (authenticatedUser.getUserType().toString().equals("ADMIN")) {
-            } else {
                 System.out.println("Login realizado com sucesso! Bem-vindo, " + authenticatedUser.getName() + "!");
                 showMenuAdmin();
+            } else {
+                System.out.println("Login realizado com sucesso! Bem-vindo, " + authenticatedUser.getName() + "!");
+                showMenuAuthenticated();
                 return;
             }
         } catch (Exception e) {
             throw new RuntimeException("Erro ao fazer login: " + e.getMessage());
         }
 
-        System.out.println("Pressione Enter para voltar ao menu...");
-        scanner.nextLine();
+        opcaoDeSair();
     }
 
     private static void adicionarItem() {
@@ -242,8 +312,12 @@ public class Console {
             System.out.println("Novo item '" + newItem.getName() + "' criada com sucesso!");
         } catch (Exception e) {
             System.out.println("\nErro ao criar item: " + e.getMessage());
-            System.out.println("Pressione Enter para voltar ao menu...");
-            scanner.nextLine();
+            opcaoDeSair();
         }
+    }
+
+    public static String opcaoDeSair() {
+        System.out.println("Pressione Enter para voltar ao menu...");
+        return scanner.nextLine();
     }
 }

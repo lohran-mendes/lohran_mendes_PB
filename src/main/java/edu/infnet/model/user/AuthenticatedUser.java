@@ -17,7 +17,7 @@ public class AuthenticatedUser implements IUser {
     private String password;
     private Address address;
     private Order order;
-    private ShoppingCart shoppingCart;
+    public ShoppingCart shoppingCart;
 
     public AuthenticatedUser(String USER_ID, String name, String email, String password) {
         this.USER_ID = java.util.UUID.randomUUID().toString();
@@ -49,7 +49,7 @@ public class AuthenticatedUser implements IUser {
     }
 
     public String getAllInfo() {
-        return USER_ID + ";" + userType + ";" + name + ";" + email + ";" + password + ";" + address.getADDRESS_ID() + ";" + order + ";" + shoppingCart;
+        return USER_ID + ";" + userType + ";" + name + ";" + email + ";" + password + ";" + getAddressIDToString() + ";" + order + ";" + shoppingCart;
     }
 
     public void consultOrders() {
@@ -60,6 +60,13 @@ public class AuthenticatedUser implements IUser {
     public void logout() {
         // Lógica para deslogar o usuário
         System.out.println("Usuário " + name + " deslogado com sucesso!");
+    }
+
+    public String getAddressIDToString() {
+        if (address == null) {
+            return "null";
+        }
+        return address.getADDRESS_ID();
     }
 
     @Override

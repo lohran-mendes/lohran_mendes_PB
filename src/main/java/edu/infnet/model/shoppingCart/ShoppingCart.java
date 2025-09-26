@@ -20,7 +20,7 @@ public class ShoppingCart {
         // implementa lógica para remover item do carrinho
     }
 
-    public void addItemToCart(Item item) {
+    public void addItemToCart(String idItem) {
         // implementa lógica para adicionar item ao carrinho
     }
 

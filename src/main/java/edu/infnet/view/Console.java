@@ -19,7 +19,16 @@ public class Console {
     private static final UnauthenticatedUser unauthenticatedUser = new UnauthenticatedUser();
     private static AuthenticatedUser authenticatedUser;
 
-    private static AdminUser admin = new AdminUser("admin", "admin@gmail.com", "admin123");
+    private static AdminUser admin;
+
+    static {
+        try {
+            admin = new AdminUser("admin", "admin@gmail.com", "admin123");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static boolean running;
     static List<String[]> itensList;
 
@@ -44,7 +53,7 @@ public class Console {
 
                 switch (opcao) {
                     case 1:
-                        visualizarCatalogo();
+                        visualizarCatalogoDefault();
                         break;
                     case 2:
                         criarNovaConta();
@@ -193,6 +202,11 @@ public class Console {
             showCatalog();
             adicionarAoCarrinho();
         }
+    }
+
+    private static void visualizarCatalogoDefault() throws Exception {
+        showCatalog();
+        String opcao = opcaoDeSair();
     }
 
     private static void adicionarAoCarrinho() throws Exception {

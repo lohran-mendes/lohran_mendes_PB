@@ -10,7 +10,7 @@ import java.util.List;
 public class AdminUser extends AuthenticatedUser {
     private final UserType userType = UserType.ADMIN;
 
-    public AdminUser(String name, String email, String password) {
+    public AdminUser(String name, String email, String password) throws Exception {
         super(name, email, password);
     }
 

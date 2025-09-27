@@ -10,9 +10,11 @@ public class PreOrder {
     private String preOrderID;
     private List<Item> items;
 
-    public PreOrder(){
+    public PreOrder() throws Exception {
         this.preOrderID = java.util.UUID.randomUUID().toString();
         this.items = new ArrayList<Item>();
+        PreOrderRepository.saveNewPreOrder(this);
+
     }
 
     public PreOrder(String orderID, List<Item> items) {

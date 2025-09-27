@@ -15,7 +15,7 @@ public class ShoppingCart {
     private int quantityOfItems;
     private PreOrder preOrder;
 
-    public ShoppingCart(){
+    public ShoppingCart() throws Exception {
         this.CART_ID = java.util.UUID.randomUUID().toString();
         this.preOrder = new PreOrder();
     }
@@ -51,7 +51,6 @@ public class ShoppingCart {
     }
 
     public String getAllInfo() throws Exception {
-        PreOrderRepository.saveNewPreOrder(preOrder);
         return CART_ID + ";" + totalPrice + ";" + quantityOfItems + ";" + preOrder.getPreOrderID();
     }
 

@@ -37,7 +37,7 @@ public class AuthenticatedUser implements IUser {
         this.password = password;
     }
 
-    public AuthenticatedUser(String name, String email, String password) {
+    public AuthenticatedUser(String name, String email, String password) throws Exception {
         this.USER_ID = java.util.UUID.randomUUID().toString();
         this.name = name;
         this.email = email;
@@ -46,7 +46,7 @@ public class AuthenticatedUser implements IUser {
         this.order = new Order();
     }
 
-    public AuthenticatedUser(String name, String email, String password, Address address) {
+    public AuthenticatedUser(String name, String email, String password, Address address) throws Exception {
         this.USER_ID = java.util.UUID.randomUUID().toString();
         this.name = name;
         this.email = email;

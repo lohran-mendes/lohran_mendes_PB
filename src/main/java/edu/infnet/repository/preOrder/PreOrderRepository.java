@@ -17,7 +17,7 @@ public class PreOrderRepository {
 
         for (String[] preOrder : preOrederRepository.getAll()) {
             if (preOrder[PreOrderTable.PRE_ORDER_ID].equals(newPreOrder.getPreOrderID())) {
-                throw new Exception("O ID do pré-pedido '" + newPreOrder.getPreOrderID() + "' já foi cadastrado!");
+                throw new Exception("O pré-pedido '" + newPreOrder.getPreOrderID() + "' já foi cadastrado!");
             }
         }
         preOrederRepository.save(content);

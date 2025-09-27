@@ -4,7 +4,6 @@ import edu.infnet.model.address.Address;
 import edu.infnet.model.item.Item;
 import edu.infnet.model.user.AdminUser;
 import edu.infnet.model.user.AuthenticatedUser;
-import edu.infnet.model.user.IUser;
 import edu.infnet.model.user.UnauthenticatedUser;
 import edu.infnet.repository.address.AddressRepository;
 import edu.infnet.repository.item.ItemTable;
@@ -75,6 +74,45 @@ public class Console {
         }
     }
 
+    private static void showMenuAuthenticated() {
+        running = true;
+
+        while (running) {
+            System.out.println("\n=== MENU PADRÃO ===");
+            System.out.println("1. Visualizar Catálogo");
+            System.out.println("2. Consultar Carrinho");
+            System.out.println("3. Consultar Pedidos");
+            System.out.println("4. Sair");
+            System.out.print("\nEscolha uma opção: ");
+
+            try {
+                int opcao = scanner.nextInt();
+                scanner.nextLine(); // Limpar o buffer
+
+                switch (opcao) {
+                    case 1:
+                        visualizarCatalogo();
+                        break;
+                    case 2:
+                        consultarCarrinho();
+                        break;
+                    case 3:
+                        // consultarPedidos();
+                        break;
+                    case 4:
+                        System.out.println("Logout realizado com sucesso!");
+                        running = false;
+                        break;
+                    default:
+                        System.out.println("Opção inválida! Por favor, escolha uma opção entre 1 e 6.");
+                }
+            } catch (Exception e) {
+                System.out.println("\nEntrada inválida! Por favor, digite um número." + e.getMessage());
+                scanner.nextLine(); // Limpar o buffer em caso de erro
+            }
+        }
+    }
+
     private static void showMenuAdmin() {
         running = true;
 
@@ -122,42 +160,18 @@ public class Console {
         }
     }
 
-    private static void showMenuAuthenticated() {
-        running = true;
+    private static void visualizarCatalogoDefault() throws Exception {
+        showCatalog();
+        String opcao = opcaoDeSair();
+    }
 
-        while (running) {
-            System.out.println("\n=== MENU PADRÃO ===");
-            System.out.println("1. Visualizar Catálogo");
-            System.out.println("2. Consultar Carrinho");
-            System.out.println("3. Consultar Pedidos");
-            System.out.println("4. Sair");
-            System.out.print("\nEscolha uma opção: ");
-
-            try {
-                int opcao = scanner.nextInt();
-                scanner.nextLine(); // Limpar o buffer
-
-                switch (opcao) {
-                    case 1:
-                        visualizarCatalogo();
-                        break;
-                    case 2:
-                        consultarCarrinho();
-                        break;
-                    case 3:
-                        // consultarPedidos();
-                        break;
-                    case 4:
-                        System.out.println("Logout realizado com sucesso!");
-                        running = false;
-                        break;
-                    default:
-                        System.out.println("Opção inválida! Por favor, escolha uma opção entre 1 e 6.");
-                }
-            } catch (Exception e) {
-                System.out.println("\nEntrada inválida! Por favor, digite um número." + e.getMessage());
-                scanner.nextLine(); // Limpar o buffer em caso de erro
-            }
+    private static void visualizarCatalogo() throws Exception {
+        showCatalog();
+        System.out.println("\n1. Adicionar item no carrinho");
+        String opcao = opcaoDeSair();
+        if (opcao.equals("1")) {
+            showCatalog();
+            adicionarAoCarrinho();
         }
     }
 
@@ -176,7 +190,6 @@ public class Console {
         System.out.println("\n-------------------------------------------------------------");
     }
 
-
     private static void consultarCarrinho() throws IOException {
         System.out.println("\n=== CARRINHO DE COMPRAS ===");
         System.out.println("Total de Itens: " + authenticatedUser.shoppingCart.getQuantityOfItems());
@@ -192,21 +205,6 @@ public class Console {
         }
 
         opcaoDeSair();
-    }
-
-    private static void visualizarCatalogo() throws Exception {
-        showCatalog();
-        System.out.println("\n1. Adicionar item no carrinho");
-        String opcao = opcaoDeSair();
-        if (opcao.equals("1")) {
-            showCatalog();
-            adicionarAoCarrinho();
-        }
-    }
-
-    private static void visualizarCatalogoDefault() throws Exception {
-        showCatalog();
-        String opcao = opcaoDeSair();
     }
 
     private static void adicionarAoCarrinho() throws Exception {

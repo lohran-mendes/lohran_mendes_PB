@@ -69,7 +69,7 @@ public class Console {
                         System.out.println("Opção inválida! Por favor, escolha uma opção entre 1 e 4.");
                 }
             } catch (Exception e) {
-                System.out.println("Entrada inválida! Por favor, digite um número. " + e.getMessage());
+                System.out.println(e.getMessage());
                 scanner.nextLine(); // Limpar o buffer em caso de erro
             }
         }
